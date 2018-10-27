@@ -1,2 +1,2 @@
-![Initialization Screen](Images/Initializing.png "Initialization Screen" | width=100)
-![Rainwater Collection](Images/RainwaterCollection.png "Rainwater Collection" | width=100)
+<img src="Images/Initializing.png" alt="Initialization Screen" width="100">
+<img src="Images/RainwaterCollection.png" alt="Rainwater Collection" width="100">

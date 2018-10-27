@@ -1,2 +1,2 @@
-Inline-style: 
-![alt text](Images/RainwaterCollection.png "Logo Title Text 1")
+![Initialization Screen](Images/Initializing.png "Initialization Screen")
+![Rainwater Collection](Images/RainwaterCollection.png "Rainwater Collection")

@@ -1,4 +1,5 @@
 <center>
+  
 # Images for "Water Wall" Project
   
 <img src="Images/Initializing.png" alt="Initialization Screen" width="40%">

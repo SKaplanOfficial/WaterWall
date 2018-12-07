@@ -8,6 +8,9 @@ import org.jbox2d.common.*;
 import org.jbox2d.dynamics.*;
 import org.jbox2d.dynamics.*;
 
+
+int mode = 0;
+
 ArrayList<Vec2> pre = new ArrayList<Vec2>();
 ArrayList<Surface> surfaces = new ArrayList<Surface>();
 //ArrayList<Fish> fishes = new ArrayList<Fish>();
@@ -40,8 +43,8 @@ void setup() {
 
   // Create the empty list
   particles = new ArrayList<Particle>();
-  
-  
+
+
   //fishes.add(new Fish(new Vec2(width/2, height/2)));
 }
 
@@ -94,7 +97,7 @@ void draw() {
 
   if (drawBarrier) {
     Vec2 newVec = new Vec2(mouseX, mouseY);
-    if (dist(newVec.x, newVec.y, previous.x, previous.y) > 1 && dist(newVec.x, newVec.y, previous.x, previous.y) < 100 || previous.x == 0) {
+    if (dist(newVec.x, newVec.y, previous.x, previous.y) > 0.2 && dist(newVec.x, newVec.y, previous.x, previous.y) < 100 || previous.x == 0) {
       pre.add(new Vec2(newVec));
       previous = newVec;
     }
@@ -103,20 +106,78 @@ void draw() {
   // Just drawing the framerate to see how many particles it can handle
   fill(0);
   text("framerate: " + (int)frameRate, 12, 16);
+
+
+  fill(255);
+  rect(width-110, 10, 100, 100);
+
+  fill(0);
+  rect(width-110, 140, 100, 100);
+
+
+  if (mousePressed) {
+    if (mode == 1) {
+      for (int o=0; o<surfaces.size(); o++) {
+        Surface s = surfaces.get(o);
+        boolean removed = false;
+        ArrayList<Vec2> p1 = new ArrayList<Vec2>();
+        ArrayList<Vec2> p2 = new ArrayList<Vec2>();
+
+        for (int i=0; i<s.points.size(); i++) {
+          Vec2 point = s.points.get(i);
+          if (dist(mouseX, mouseY, point.x, point.y) < 5) {
+            removed = true;
+
+            if (s.points.size() > 1) {
+              p1 = new ArrayList<Vec2>(s.points.subList(0, i));
+            }
+
+            if (i < s.points.size()-2) {
+              p2 = new ArrayList<Vec2>(s.points.subList(i+1, s.points.size()-1));
+            }
+
+
+            break;
+          }
+        }
+
+        if (removed) {
+          s.killBody();
+          surfaces.remove(s);
+
+          if (p1.size() > 1) {
+            surfaces.add(new Surface(p1));
+          }
+
+          if (p2.size() > 1) {
+            surfaces.add(new Surface(p2));
+          }
+        }
+      }
+    }
+  }
 }
 
 
 void mousePressed() {
-  drawBarrier = true;
+  if (mouseX > width-100 && mouseX < width-10 && mouseY > 140 && mouseY < 240) {
+    mode = 0;
+  }  if (mouseX > width-100 && mouseX < width-10 && mouseY > 10 && mouseY < 110) {
+    mode = 1;
+  } else if (mode == 0) {
+    drawBarrier = true;
+  }
 }
 
 void mouseReleased() {
-  if (pre.size() > 1) {
-    surfaces.add(new Surface(pre));
+  if (mode == 0) {
+    if (pre.size() > 1) {
+      surfaces.add(new Surface(pre));
+    }
+
+    drawBarrier = false;
+    pre = new ArrayList<Vec2>();
+
+    previous = new Vec2(0, 0);
   }
-
-  drawBarrier = false;
-  pre = new ArrayList<Vec2>();
-
-  previous = new Vec2(0, 0);
 }

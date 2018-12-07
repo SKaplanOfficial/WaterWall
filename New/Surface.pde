@@ -14,8 +14,17 @@ class Surface {
   Surface(ArrayList<Vec2> s) {
     points = s;
     chance = new ArrayList<Float>(points.size());
-
-    // This is what box2d uses to put the surface in its world
+    
+    makeBody(s);
+  }
+  
+  void killBody() {
+    box2d.destroyBody(body);
+  }
+  
+  
+  void makeBody (ArrayList<Vec2> s){
+        // This is what box2d uses to put the surface in its world
     ChainShape chain = new ChainShape();
 
     // Build an array of vertices in Box2D coordinates

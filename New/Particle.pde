@@ -45,23 +45,28 @@ class Particle {
     //rotate(-a);
     //noStroke();
     noFill();
-    strokeWeight(r*2);
+    // strokeWeight(r*2);
     //ellipse(0,0,r*2,r*2);
     // Let's add a line so we can see the rotation
-    int count = 0;
-    
+
     stroke(20, 80, 240, 10);
-    
+
     for (Particle p : particles) {
       Vec2 pos2 = box2d.getBodyPixelCoord(p.body);
 
       float velMag = abs(body.getLinearVelocity().x) + abs(body.getLinearVelocity().y);
       float dist = dist(pos.x, pos.y, pos2.x, pos2.y);
 
-      if (!p.equals(this)  && ((velMag > 5 && dist < velMag) || (velMag < 5 && dist < 8)) && pos.y < pos2.y) {
-        stroke(20, 80, 240, 50+255/sq(dist));
+      strokeWeight(r*2);
+      if (!p.equals(this)  && (velMag > 5 && dist < velMag && dist > r*2) && pos.y < pos2.y) {
+        stroke(20, 80, 240, 100);
         curve((pos.x+pos2.x)/2, (pos.y+pos2.y)/2, pos.x, pos.y, pos2.x, pos2.y, (pos.x+pos2.x)/2, (pos.y+pos2.y)/2);
-        count++;
+      } else if (velMag <= 5 && dist <= r*2) {
+        stroke(20, 80, 240, 100);
+        curve((pos.x+pos2.x)/2, (pos.y+pos2.y)/2, pos.x, pos.y, pos2.x, pos2.y, (pos.x+pos2.x)/2, (pos.y+pos2.y)/2);
+      } else {
+        stroke(20, 80, 240, 100);
+        strokeWeight(r*4);
       }
     }
 

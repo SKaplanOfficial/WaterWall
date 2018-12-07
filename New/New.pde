@@ -2,12 +2,6 @@
 //   IMPORTS, VARIABLES, ETC   //
 //*****************************//
 
-import toxi.geom.*;                   // Library for Vec3D - https://bitbucket.org/postspectacular/toxiclibs/downloads/
-
-import ch.bildspur.postfx.builder.*;  // Library for filters - https://github.com/cansik/processing-postfx/
-import ch.bildspur.postfx.pass.*;
-import ch.bildspur.postfx.*;
-
 import shiffman.box2d.*;              // Physics library - https://github.com/shiffman/Box2D-for-Processing
 import org.jbox2d.collision.shapes.*;
 import org.jbox2d.common.*;

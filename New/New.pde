@@ -10,7 +10,7 @@ import org.jbox2d.dynamics.*;
 
 ArrayList<Vec2> pre = new ArrayList<Vec2>();
 ArrayList<Surface> surfaces = new ArrayList<Surface>();
-ArrayList<Fish> fishes = new ArrayList<Fish>();
+//ArrayList<Fish> fishes = new ArrayList<Fish>();
 ArrayList<PImage> images = new ArrayList<PImage>();
 
 // A reference to our box2d world
@@ -42,7 +42,7 @@ void setup() {
   particles = new ArrayList<Particle>();
   
   
-  fishes.add(new Fish(new Vec2(width/2, height/2)));
+  //fishes.add(new Fish(new Vec2(width/2, height/2)));
 }
 
 void draw() {
@@ -68,9 +68,9 @@ void draw() {
     p.display();
   }
 
-  for (Fish f : fishes) {
-    f.display();
-  }
+  //for (Fish f : fishes) {
+  //  f.display();
+  //}
 
 
   beginShape();

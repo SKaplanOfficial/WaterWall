@@ -1,3 +1,7 @@
+//*****************************//
+//    WATERBOX DEFINITION      //
+//*****************************//
+
 class WaterBox {
   float x, y, w, h;
 
@@ -26,26 +30,26 @@ class WaterBox {
 
   void display() {
     pushMatrix();
-    translate(0, 0, 1);
-    noStroke();
     fill(0, 100, 100+noise(frameCount/50.0)*150, 150);
+    stroke(0, 50, 50+noise(frameCount/50.0)*150, 150);
+    strokeWeight(h/10);
     //rect(x, y, w, -h);
 
     beginShape();
-    vertex(x, y-h);
+    vertex(x-50, y-h);
 
     for (float i=x; i<x+w; i+=(x+w)/50) {
       curveVertex(i, y-h+noise(i+frameCount/100.0)*constrain(h/10, 0, 20));
     }
 
     fill(0, 100, 100+noise(frameCount/50.0)*150, 150);
-    vertex(w, y-h);
+    vertex(w+50, y-h);
 
     fill(0, 100, 100+noise(frameCount/50.0)*150, 150);
-    vertex(w, y);
+    vertex(w+50, y+50);
 
     fill(0, 100, 100+noise(frameCount/50.0)*150, 150);
-    vertex(x, y);
+    vertex(x-50, y+50);
     endShape(CLOSE);
 
     if (h > h-15) {

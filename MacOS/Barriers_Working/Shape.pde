@@ -1,26 +1,23 @@
+//*****************************//
+//      SHAPE DEFINITION       //
+//*****************************//
+
 class Shape {
-  PShape shape;
+  PShape shape;          // Actual shape object to be displayed
+  int type;              // Type of shape... useful if more shapes other than triangles are added
 
-  float minX, minY;
-  float maxX, maxY;
+  float minX, minY;      // Top and bottom positions
+  float maxX, maxY;      // Right and left postions
+  float area;            // Area of shape
 
-  float cX;
-  
-  color c;
-
-  float xpos1, xpos2, xpos3, xpos4;
-  float ypos1, ypos2, ypos3, ypos4;
-
-  float area;
-
-  int type;
+  float xpos1, xpos2, xpos3, xpos4;  // X values of coordinates
+  float ypos1, ypos2, ypos3, ypos4;  // Y values of coordinates
 
   // TRIANGLE
   Shape(float x1, float y1, float x2, float y2, float x3, float y3) {
-    c = color(random(255), random(255), random(255));
     shape = createShape(TRIANGLE, x1, y1, x2, y2, x3, y3);
 
-    xpos1 = x1;
+    xpos1 = x1;          // Set values of coordinates
     xpos2 = x2;
     xpos3 = x3;
 
@@ -28,19 +25,8 @@ class Shape {
     ypos2 = y2;
     ypos3 = y3;
 
-    cX = max(y1, y2);
-    cX = max(cX, y2);
-    
-    minY = min(y1, y2);
+    minY = min(y1, y2);  // Minimum Y value
     minY = min(minY, y3);
-    
-    if (cX == y1) {
-      cX = x1;
-    } else if (cX == y2) {
-      cX = x2;
-    } else if (cX == y3) {
-      cX = x3;
-    }
 
     area = triangleArea(xpos1, ypos1, xpos2, ypos2, xpos3, ypos3);
 
@@ -54,6 +40,7 @@ class Shape {
 
   void checkCollisions() {
     if (mousePressed && mouseButton == RIGHT) {
+      // Remove the triangle if mouse is right clicked within the bounds of the shape
       if (type == 1) {
         float area1 = triangleArea(mouseX, mouseY, xpos1, ypos1, xpos2, ypos2);
         float area2 = triangleArea(mouseX, mouseY, xpos2, ypos2, xpos3, ypos3);
@@ -62,8 +49,6 @@ class Shape {
         if (area1 + area2 + area3 == area) {
           shapes.remove(this);
         }
-      } else if (mouseX > minX && mouseX < maxX && mouseY > minY && mouseY < maxY) {
-        shapes.remove(this);
       }
     }
 
@@ -95,21 +80,22 @@ class Shape {
   }
 
   void display() {
-    shape.setFill(color(c, 100));
-    shape.setStroke(color(c, 50));
-    strokeWeight(10);
+    shape.setFill(color(200, 100));
+    shape.setStroke(color(255, 50));
+    shape.strokeWeight(5);
     shape(shape);
   }
 }
 
 
 float triangleArea(float x1, float y1, float x2, float y2, float x3, float y3) {
+  // Three lines
   float d1 = dist(x1, y1, x2, y2);
   float d2 = dist(x2, y2, x3, y3);
   float d3 = dist(x3, y3, x1, y1);
 
+  // Heron's formula
   float s = (d1+d2+d3)/2;
-
   float a = sqrt(s*(s-d1)*(s-d2)*(s-d3));
 
   return a;

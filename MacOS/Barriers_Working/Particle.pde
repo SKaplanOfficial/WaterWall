@@ -1,24 +1,26 @@
+//*****************************//
+//  WATER PARTICLE DEFINITION  //
+//*****************************//
+
 class Particle {
-  // Global Variables
+  boolean reachedBarrier = false;                    // Whether this particle is touching a barrier or not
+  float opacity = 255;                               // Opacity (decreases over time)
 
-  boolean reachedBarrier = false;
-  float opacity = 255;
+  Vec3D loc = new Vec3D(0, 0, 0);                    // Location
+  Vec3D speed = new Vec3D(random(-1, 1)/10, 0, 0);   // Velocity
+  Vec3D acc = new Vec3D();                           // Acceleration
+  Vec3D grav = new Vec3D(0, 0.2, 0);                 // Gravity
 
-  Vec3D loc = new Vec3D(0, 0, 0);
-  Vec3D speed = new Vec3D(random(-1,1)/10, 0, 0);
-  Vec3D acc = new Vec3D();
-  Vec3D grav = new Vec3D(0, 5, 0);
+  color c;                                           // Color
+  color cStorage;                                    // Color storage (to compare to changing color over time)
 
-  color c;
-
-  // Constructor
   Particle(float x_, float y_) {
     loc = new Vec3D(x_, y_, 0);
-    c = color(0, 100, 150+frameCount%55);
-    //c = color(150+frameCount%55, 0, 0);
+    c = color(0, 100, 170+random(55));
+    cStorage = c;
   }
 
-  // Functions
+
   void run() {
     move();
     bounce();
@@ -27,13 +29,22 @@ class Particle {
     display();
   }
 
+
   Vec3D getPosition() {
+    // Return Vec3D location
     return loc;
   }
 
+
   void flock() {
-    checkBarriers(speed.magnitude()*20);
-    separate(speed.magnitude()*20);
+    separate((8-speed.y)*5);
+    checkBarriers(speed.magnitude()*1000);
+
+    if (acc.x > 0) {
+      acc.x = random(0.2, 1);
+    } else if (acc.x < 0) {
+      acc.x = -random(0.2, 1);
+    }
   }
 
   void checkBarriers(float magnitude) {
@@ -46,12 +57,16 @@ class Particle {
 
       float distance = loc.distanceTo(other.loc);
 
-      if (distance > 0 && distance < 15) {
+      if (distance > 0 && distance < 20) {
         Vec3D diff = loc.sub(other.loc);
         diff.normalizeTo(1.0/distance);
 
         steer.addSelf(diff);
         count++;
+
+        other.resetPlants();
+      } else if (distance < 200) {
+        other.plantChance += 0.0001;
       }
     }
 
@@ -64,6 +79,11 @@ class Particle {
     acc.addSelf(steer);
   }
 
+  void gravity() {
+    speed.addSelf(grav);
+    speed.x *= 0.2;
+  }
+
   void separate(float magnitude) {
 
     Vec3D steer = new Vec3D();
@@ -73,80 +93,69 @@ class Particle {
       Particle other = particles.get(i);
 
       float distance = loc.distanceTo(other.loc);
-      float distX = abs(loc.x - other.loc.x);
-      float distY = abs(loc.y - other.loc.y);
-      float sDiff = acc.distanceTo(other.acc);
 
-      if (reachedBarrier && other.reachedBarrier && distance > 0 && distance < 0.4) {
+      if (distance > 0 && distance < 8) {
         Vec3D diff = loc.sub(other.loc);
         diff.normalizeTo(1.0/distance);
 
         steer.addSelf(diff);
         count++;
       }
-
-      strokeWeight(1);
-      stroke(c, opacity/10);
-      if (distance > 0 && distX < 8 && distY < 15 && sDiff < 10) {
-        line(loc.x, loc.y, other.loc.x, other.loc.y);
-      }
     }
 
     if (count > 0) {
       steer.scaleSelf(1.0/count);
-      speed.scaleSelf(0.9/count);
     }
 
     steer.scaleSelf(magnitude);
     acc.addSelf(steer);
-    
-    if (acc.x > 0){
-      acc.x = random(0.2, 1);
-    } else if (acc.x < 0){
-      acc.x = -random(0.2, 1);
-    }
-  }
-
-  void gravity() {
-    speed.addSelf(grav);
-    speed.x *= 0.8;
   }
 
   void bounce() {
     if (loc.x > width || loc.x < 0) {
-      // speed.x *= -1;
-      //loc.x = width-loc.x;
       particles.remove(this);
     }
 
-    if (loc.y > height) {
-      //  speed.y *= -1;
-      //loc.y = height-loc.y;
+    if (loc.y > height-wB.getWaterLevel()+10) {
+      if (wB.getWaterLevel() < height/2) {
+        wB.increaseLevel(0.2);
+      }
       particles.remove(this);
-      wB.increaseLevel(0.01);
     }
   }
 
   void move() {
     speed.addSelf(acc);
-    if (abs(speed.y) > 2){
-      speed.y = constrain(speed.y, 0, 2);
+    if (abs(speed.y) > 0) {
+      speed.y = constrain(speed.y, 0, 3);
     }
+    
+    speed.limit(3);
+    
     loc.addSelf(speed);
 
     acc.clear();
   }
 
+  Vec3D getLoc() {
+    return loc;
+  }
+
   void display() {
-    //if (reachedBarrier != true) {
+    if (abs(speed.x) > 0.1) {
+      c = color(red(c), green(c), blue(c)+abs(speed.x));
+    } else if (blue(c) > blue(cStorage)) {
+      c = color(red(c), green(c), blue(c)/1.01);
+    }
+
     opacity *= 0.999;
-    //}
 
     if (opacity < 2) {
       particles.remove(this);
     }
-    strokeWeight(2);
+
+    strokeWeight(5+speed.y);
     stroke(c, opacity);
-    //point(loc.x, loc.y);
+    point(loc.x, loc.y);
   }
 }

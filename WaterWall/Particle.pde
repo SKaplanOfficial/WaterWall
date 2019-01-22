@@ -1,24 +1,20 @@
-// The Nature of Code
-// <http://www.shiffman.net/teaching/nature>
-// Spring 2010
-// Box2DProcessing example
-
-// A circular particle
+//*****************************//
+//  WATER PARTICLE DEFINITION  //
+//*****************************//
 
 class Particle {
-
-  // We need to keep track of a Body and a radius
-  Body body;
-  float r;
+  Body body;              // Physical collision mask
+  float r;                // Radius
 
   Particle(float x, float y, float r_) {
+    // POST: Particle initialized with radius r_, position (x, y)
     r = r_;
-    // This function puts the particle in the Box2d world
-    makeBody(x, y, r);
+    makeBody(x, y, r);    // Establish the particle as an object of the Box2D world
   }
 
-  // This function removes the particle from the box2d world
+
   void killBody() {
+    // POST: Removes particle body from Box2D world, collisions no longer detected for this object
     box2d.destroyBody(body);
   }
 

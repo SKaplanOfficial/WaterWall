@@ -1,9 +1,7 @@
-// The Nature of Code
-// <http://www.shiffman.net/teaching/nature>
-// Spring 2010
-// Box2DProcessing example
-
 // An uneven surface boundary
+//******************************//
+// SURFACE (BARRIER) DEFINITION //
+//******************************//
 
 class Surface {
   // We'll keep track of all of the surface points
@@ -24,7 +22,7 @@ class Surface {
   
   
   void makeBody (ArrayList<Vec2> s){
-        // This is what box2d uses to put the surface in its world
+    // This is what box2d uses to put the surface in its world
     ChainShape chain = new ChainShape();
 
     // Build an array of vertices in Box2D coordinates
